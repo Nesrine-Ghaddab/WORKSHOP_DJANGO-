@@ -45,9 +45,8 @@ class submission(models.Model):
     
     user_id=models.ForeignKey('UserApp.User', on_delete=models.CASCADE,related_name="submissions")
     conference=models.ForeignKey('conference', on_delete=models.CASCADE)
-
     
-    updated_at=models.DateTimeField(auto_now=True)  
     created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)  
 
     
