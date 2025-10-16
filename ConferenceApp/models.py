@@ -2,6 +2,8 @@ from django.db import models
 from django.core.validators import MinLengthValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.auth.models import User
+from django.conf import settings
 
 # Create your models here.
 class conference(models.Model):
@@ -25,7 +27,9 @@ class conference(models.Model):
     def clean(self):
         if self.end_date < self.start_date:
          raise ValidationError("End date cannot be earlier than start date.")
-    
+
+    def __str__(self):
+        return self.title
 
 class submission(models.Model):
     submission_id=models.CharField(max_length=255, primary_key=True)
@@ -40,13 +44,12 @@ class submission(models.Model):
 
     ]
     status=models.CharField(max_length=255,choices=choices, default='pending')
-    payed=models.BooleanField(default=False)
-    submission_date=models.DateTimeField(auto_now_add=True)
-    
-    user_id=models.ForeignKey('UserApp.User', on_delete=models.CASCADE,related_name="submissions")
-    conference=models.ForeignKey('conference', on_delete=models.CASCADE)
-    
-    created_at=models.DateTimeField(auto_now_add=True)
-    updated_at=models.DateTimeField(auto_now=True)  
+    payed = models.BooleanField(default=False)
+    submission_date = models.DateTimeField(auto_now_add=True)
+    user_id = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
+    conference = models.ForeignKey('conference', on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     
