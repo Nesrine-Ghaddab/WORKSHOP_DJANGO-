@@ -1,11 +1,12 @@
 from django.db import models
+from ConferenceApp.models import conference
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, FileExtensionValidator
 from django.utils import timezone
 import string, random
 
 class Session(models.Model):
-    submission_id = models.CharField(max_length=12, primary_key=True, editable=False)
+    session_id = models.CharField(max_length=12, primary_key=True, editable=False)
     title = models.CharField(
         max_length=255,
         validators=[RegexValidator(
@@ -14,12 +15,18 @@ class Session(models.Model):
         )]
     )
     topic = models.CharField(max_length=255)
-    session_day = models.DateField()
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+    session_day = models.DateField(null=True, blank=True)
+    start_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField(null=True, blank=True)
     keywords = models.CharField(max_length=255)
-    submission_date = models.DateField()
-    conference = models.ForeignKey('ConferenceApp.conference', on_delete=models.CASCADE, related_name="sessions")
+    submission_date = models.DateField(null=True, blank=True)
+    conference = models.ForeignKey(
+        'ConferenceApp.conference',
+        on_delete=models.CASCADE,
+        related_name="sessions",
+        null=True,
+        blank=True
+    )
     paper = models.FileField(
         upload_to='papers/',
         validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
@@ -28,8 +35,8 @@ class Session(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
-        if self.conference:
-            if not (self.conference.start_date <= self.session_day <= self.conference.end_date):
+        if self.session_day:
+            if not (self.start_time <= self.session_day <= self.end_time):
                 raise ValidationError({
                     'session_day': "La date de la session doit être comprise entre la date de début et de fin de la conférence associée."
                 })
@@ -44,13 +51,13 @@ class Session(models.Model):
                         'keywords': "Vous ne pouvez pas dépasser 10 mots-clés."
                     })
             if self.submission_date:
-                if self.submission_date > self.conference.start_date:
+                if self.session_day > self.session.start_time:
                     raise ValidationError({
-                        'submission_date': "La soumission ne peut être faite que pour des conférences à venir."
+                        'session_day': "La soumission ne peut être faite que pour des conférences à venir."
                     })
         # Suppression de la validation liée au participant
 
     def save(self, *args, **kwargs):
-        if not self.submission_id:
-            self.submission_id = "SUB-" + ''.join(random.choices(string.ascii_uppercase, k=8))
+        if not self.session_id:
+            self.session_id = "SUB-" + ''.join(random.choices(string.ascii_uppercase, k=8))
         super().save(*args, **kwargs)
