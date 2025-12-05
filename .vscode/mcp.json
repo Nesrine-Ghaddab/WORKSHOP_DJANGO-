@@ -1,0 +1,21 @@
+{
+    "servers": {
+        "say hello":{
+            "type":"stdio",
+            "command": "uv",
+            "args": [
+               "run","main.py"
+            ],
+        },
+        "calculator": {
+            "type": "stdio",
+            "command": "uv",
+            "args": [
+            "run","calculator.py"
+
+            ]
+        }
+
+        
+}
+}
