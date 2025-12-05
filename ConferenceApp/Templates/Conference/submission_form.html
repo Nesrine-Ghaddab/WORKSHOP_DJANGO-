@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ajouter une soumission{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="bg-light rounded p-4">
+        <h2>Nouvelle soumission pour la conférence</h2>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="id_submission_id" class="form-label">Submission ID</label>
+            {{ form.submission_id }}
+          </div>
+          <div class="mb-3">
+            <label for="id_title" class="form-label">Titre</label>
+            {{ form.title }}
+          </div>
+          <div class="mb-3">
+            <label for="id_abstract" class="form-label">Résumé</label>
+            {{ form.abstract }}
+          </div>
+          <div class="mb-3">
+            <label for="id_key_words" class="form-label">Mots-clés</label>
+            {{ form.key_words }}
+          </div>
+          <div class="mb-3">
+            <label for="id_paper" class="form-label">Fichier (PDF)</label>
+            {{ form.paper }}
+          </div>
+          <div class="mb-3">
+            <label for="id_status" class="form-label">Statut</label>
+            {{ form.status }}
+          </div>
+          <div class="mb-3 form-check">
+            {{ form.payed }}
+            <label class="form-check-label" for="id_payed">Payé</label>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Soumettre</button>
+            {% comment %} Cancel: if object exists use its conference pk, else use view.kwargs.conference_pk {% endcomment %}
+            <a href="{% if form.instance.pk %}{% url 'submission_list' form.instance.conference.pk %}{% else %}{% url 'submission_list' view.kwargs.conference_pk %}{% endif %}" class="btn btn-secondary">Annuler</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

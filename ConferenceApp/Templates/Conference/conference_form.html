@@ -1,8 +1,93 @@
-<h2>ajouter une conference</h2>
-<form method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">Enregistrer</button>
-    
+{% extends "base.html" %}
+{% load static %}
 
-</form>
+{% block title %}
+    {% if view.object.pk %}Modifier{% else %}Ajouter{% endif %} une conférence
+{% endblock %}
+
+{% block content %}
+<!-- Hero Start -->
+<div class="container-fluid pb-5 bg-primary hero-header mb-5">
+    <div class="container py-5">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 text-white mb-0 animated slideInLeft">
+                    {% if view.object.pk %}Modifier{% else %}Ajouter{% endif %} une conférence
+                </h1>
+            </div>
+            <div class="col-lg-6 animated slideInRight">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center justify-content-lg-end mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'conference_liste' %}" class="text-white">Conférences</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">
+                            {% if view.object.pk %}Modifier{% else %}Ajouter{% endif %}
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Conference Form Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="bg-light rounded p-4 p-sm-5 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="text-center mx-auto mb-5">
+                        <h1 class="display-5">{% if view.object.pk %}Modifier{% else %}Ajouter{% endif %} une conférence</h1>
+                        <p class="mb-0">Remplissez le formulaire ci-dessous pour {% if view.object.pk %}modifier{% else %}créer{% endif %} une conférence</p>
+                    </div>
+                    <form method="post" class="wow fadeIn" data-wow-delay="0.3s">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="row mb-3">
+                            <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+                            <div class="col-sm-9">
+                                {{ field }}
+                                {% if field.help_text %}
+                                <div class="form-text text-muted">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary py-3 px-5">
+                                <i class="fa fa-save me-2"></i>Enregistrer
+                            </button>
+                            <a href="{% url 'conference_liste' %}" class="btn btn-secondary py-3 px-5 ms-2">
+                                <i class="fa fa-times me-2"></i>Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Conference Form End -->
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-control {
+        height: 45px;
+    }
+    textarea.form-control {
+        height: auto;
+    }
+    .invalid-feedback {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}

@@ -1,16 +1,87 @@
-<h2>Liste des conférences</h2>
+{% extends "base.html" %}
+{% load static %}
 
-<table border="1">
-    <tr>
-        <td>title</td>
-        <td>location</td>
-    </tr>
-{% for c in liste %}
-        <tr>
-            <td>
-                <a href="{% url 'conference_detail' c.pk %}">details</a>
-            </td>
-            <td>{{ c.location }}</td>
-        </tr>
-{% endfor %}
-</table>
+{% block title %}Liste des conférences{% endblock %}
+
+{% block content %}
+<!-- Hero Start -->
+<div class="container-fluid pb-5 bg-primary hero-header mb-5">
+    <div class="container py-5">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 text-white mb-0 animated slideInLeft">Conférences</h1>
+            </div>
+            <div class="col-lg-6 animated slideInRight">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center justify-content-lg-end mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Conférences</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Conferences List Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="display-5 mb-4">Nos Conférences</h1>
+            <a href="{% url 'conference_add' %}" class="btn btn-primary py-2 px-4 mt-3">Ajouter une conférence</a>
+        </div>
+        <form method="get" action="{% url 'filter_conferences' %}">
+            <select name="theme">
+                <option value="">-- Thème --</option>
+                <option value="CS&AI">Informatique & IA</option>
+                <option value="CS">Sciences sociales</option>
+                <option value="DS">Data Science</option>
+            </select>
+            <input type="date" name="start_date">
+            <input type="date" name="end_date">
+            <button type="submit">Filtrer</button>
+        </form>
+        <div class="row g-4">
+            {% for c in liste %}
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item d-flex flex-column h-100">
+                    <div class="service-text text-center rounded p-4">
+                        <div class="btn-square rounded-circle mx-auto mb-3">
+                            <i class="fa fa-calendar fa-3x text-white"></i>
+                        </div>
+                        <h4 class="mb-3">{{ c.title }}</h4>
+                        <p class="mb-2"><i class="fa fa-map-marker-alt me-2"></i>{{ c.location }}</p>
+                        <p class="mb-2"><i class="fa fa-calendar me-2"></i>{{ c.start_date|date:"d M Y" }}</p>
+                        <hr class="w-75 mx-auto">
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <a href="{% url 'conference_detail' c.pk %}" class="btn btn-sm btn-primary px-3">
+                                <i class="fa fa-eye me-1"></i>Détails
+                            </a>
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'submission_list' c.pk %}" class="btn btn-sm btn-secondary px-3">
+                                <i class="fa fa-list me-1"></i>Mes soumissions
+                            </a>
+                            {% else %}
+                            <a href="{% url 'login' %}?next={% url 'submission_list' c.pk %}" class="btn btn-sm btn-secondary px-3">
+                                <i class="fa fa-sign-in me-1"></i>Se connecter
+                            </a>
+                            {% endif %}
+                            {% if user.is_authenticated and user.role == 'committee' %}
+                            <a href="{% url 'conference_edit' c.pk %}" class="btn btn-sm btn-warning px-3">
+                                <i class="fa fa-edit me-1"></i>Modifier
+                            </a>
+                            <a href="{% url 'conference_delete' c.pk %}" class="btn btn-sm btn-danger px-3">
+                                <i class="fa fa-trash me-1"></i>Supprimer
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Conferences List End -->
+{% endblock %}

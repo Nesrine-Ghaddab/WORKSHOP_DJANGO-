@@ -1,3 +1,117 @@
-<h1>{{ conference.title }}</h1>
-<p>Location: {{ conference.location }}</p>
-<p>Date: {{ conference.start_date }} - {{ conference.end_date }}</p>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ conference.title }}{% endblock %}
+
+{% block content %}
+<!-- Hero Start -->
+<div class="container-fluid pb-5 bg-primary hero-header mb-5">
+    <div class="container py-5">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 text-white mb-0 animated slideInLeft">Détails de la conférence</h1>
+            </div>
+            <div class="col-lg-6 animated slideInRight">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center justify-content-lg-end mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'conference_liste' %}" class="text-white">Conférences</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">{{ conference.title }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Conference Detail Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="bg-light rounded p-4 p-sm-5 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="text-center mx-auto mb-5">
+                        <h1 class="display-5">{{ conference.title }}</h1>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <div class="feature-item rounded p-4">
+                                <i class="fa fa-map-marker-alt fa-2x text-primary mb-3"></i>
+                                <h5>Lieu</h5>
+                                <p class="mb-0">{{ conference.location }}</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="feature-item rounded p-4">
+                                <i class="fa fa-calendar fa-2x text-primary mb-3"></i>
+                                <h5>Dates</h5>
+                                <p class="mb-0">Du {{ conference.start_date|date:"d M Y" }} au {{ conference.end_date|date:"d M Y" }}</p>
+                            </div>
+                        </div>
+                        {% if conference.description %}
+                        <div class="col-12 mt-4">
+                            <div class="feature-item rounded p-4">
+                                <i class="fa fa-info-circle fa-2x text-primary mb-3"></i>
+                                <h5>Description</h5>
+                                <p class="mb-0">{{ conference.description }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-center mt-5">
+                        <a href="{% url 'conference_edit' conference.pk %}" class="btn btn-warning py-3 px-5 me-3">
+                            <i class="fa fa-edit me-2"></i>Modifier
+                        </a>
+                        <a href="{% url 'conference_delete' conference.pk %}" class="btn btn-danger py-3 px-5">
+                            <i class="fa fa-trash me-2"></i>Supprimer
+                        </a>
+                    </div>
+                    <div class="text-center mt-3">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'submission_add' conference.pk %}" class="btn btn-primary py-2 px-4">
+                            <i class="fa fa-file-upload me-2"></i>Soumettre un article
+                        </a>
+                        {% else %}
+                        <a href="{% url 'login' %}?next={% url 'submission_add' conference.pk %}" class="btn btn-primary py-2 px-4">
+                            <i class="fa fa-sign-in me-2"></i>Se connecter pour soumettre
+                        </a>
+                        {% endif %}
+                    </div>
+                    <!-- Submissions list for this conference -->
+                    <div class="mt-5">
+                        <h4>Soumissions associées</h4>
+                        {% if conference.submission_set.all %}
+                        <div class="list-group mt-3">
+                            {% for s in conference.submission_set.all %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ s.title }}</strong>
+                                    <div class="text-muted">Auteur: {{ s.user_id }} — Statut: {{ s.get_status_display }}</div>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="{% url 'submission_detail' s.submission_id %}" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-eye me-1"></i> Détails
+                                    </a>
+                                    {% if s.paper %}
+                                    <a href="{{ s.paper.url }}" download class="btn btn-sm btn-success">
+                                        <i class="fa fa-download me-1"></i> Télécharger
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="list-group-item">Aucune soumission pour cette conférence.</div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted">Aucune soumission pour cette conférence.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Conference Detail End -->
+{% endblock %}

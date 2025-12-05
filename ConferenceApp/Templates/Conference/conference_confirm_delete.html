@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Supprimer la conférence{% endblock %}
+
+{% block content %}
+<!-- Hero Start -->
+<div class="container-fluid pb-5 bg-primary hero-header mb-5">
+    <div class="container py-5">
+        <div class="row g-3 align-items-center">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-4 text-white mb-0 animated slideInLeft">Supprimer la conférence</h1>
+            </div>
+            <div class="col-lg-6 animated slideInRight">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center justify-content-lg-end mb-0">
+                        <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'conference_liste' %}" class="text-white">Conférences</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Supprimer</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Hero End -->
+
+<!-- Delete Confirmation Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="bg-light rounded p-4 p-sm-5 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="text-center">
+                        <div class="btn-square rounded-circle bg-danger mx-auto mb-4" style="width: 90px; height: 90px;">
+                            <i class="fa fa-exclamation-triangle fa-3x text-white"></i>
+                        </div>
+                        <h2 class="mb-4">Confirmation de suppression</h2>
+                        <p class="mb-4 fs-5">Êtes-vous sûr de vouloir supprimer la conférence "{{ object.title }}" ?</p>
+                        <p class="text-muted">Cette action est irréversible.</p>
+                        
+                        <form method="post" class="mt-4">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger py-3 px-5">
+                                <i class="fa fa-trash me-2"></i>Oui, supprimer
+                            </button>
+                            <a href="{% url 'conference_liste' %}" class="btn btn-secondary py-3 px-5 ms-2">
+                                <i class="fa fa-times me-2"></i>Non, annuler
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete Confirmation End -->
+{% endblock %}

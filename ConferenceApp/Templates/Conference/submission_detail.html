@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>Submission: {{ submission.title }}</h1>
+
+    <dl class="row">
+      <dt class="col-sm-3">ID</dt>
+      <dd class="col-sm-9">{{ submission.submission_id }}</dd>
+
+      <dt class="col-sm-3">Title</dt>
+      <dd class="col-sm-9">{{ submission.title }}</dd>
+
+      <dt class="col-sm-3">Abstract</dt>
+      <dd class="col-sm-9">{{ submission.abstract }}</dd>
+
+      <dt class="col-sm-3">Keywords</dt>
+      <dd class="col-sm-9">{{ submission.key_words }}</dd>
+
+      <dt class="col-sm-3">Paper</dt>
+      <dd class="col-sm-9">
+        {% if submission.paper %}
+          <a href="{{ submission.paper.url }}" download>Download paper</a>
+        {% else %}
+          No paper attached.
+        {% endif %}
+      </dd>
+
+      <dt class="col-sm-3">Status</dt>
+      <dd class="col-sm-9">{{ submission.get_status_display }}</dd>
+
+      <dt class="col-sm-3">Paid</dt>
+      <dd class="col-sm-9">{{ submission.payed }}</dd>
+
+      <dt class="col-sm-3">Submitted at</dt>
+      <dd class="col-sm-9">{{ submission.submission_date }}</dd>
+
+      <dt class="col-sm-3">Submitted by</dt>
+      <dd class="col-sm-9">{{ submission.user_id }}</dd>
+
+      <dt class="col-sm-3">Conference</dt>
+      <dd class="col-sm-9">{{ submission.conference }}</dd>
+
+      <dt class="col-sm-3">Created at</dt>
+      <dd class="col-sm-9">{{ submission.created_at }}</dd>
+
+      <dt class="col-sm-3">Updated at</dt>
+      <dd class="col-sm-9">{{ submission.updated_at }}</dd>
+    </dl>
+
+    <a class="btn btn-secondary" href="javascript:history.back()">Back</a>
+  </div>
+{% endblock %}

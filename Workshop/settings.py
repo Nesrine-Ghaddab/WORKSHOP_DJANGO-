@@ -37,9 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'UserApp',
     'ConferenceApp',
-    'SessionApp'
+    'SessionApp',
+    'securityConfigApp',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +60,8 @@ ROOT_URLCONF = 'Workshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'Templates'],
+        # project-level templates directory
+        'DIRS': [ BASE_DIR / 'Workshop' / 'templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -68,6 +72,11 @@ TEMPLATES = [
         },
     },
 ]
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+# Add the project's static folder (Workshop/static)
+STATICFILES_DIRS = [ BASE_DIR / 'Workshop' / 'static' ]
 
 WSGI_APPLICATION = 'Workshop.wsgi.application'
 
@@ -124,3 +133,29 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'UserApp.User'
+LOGIN_REDIRECT_URL="conference_liste"
+LOGOUT_REDIRECT_URL="login"
+LOGIN_URL="login"
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+REST_FRAMEWORK = { 
+'DEFAULT_AUTHENTICATION_CLASSES': ( 
+'rest_framework_simplejwt.authentication.JWTAuthentication', 
+), 
+'DEFAULT_PERMISSION_CLASSES': ( 
+'rest_framework.permissions.IsAuthenticated', 
+), 
+} 
+
+from datetime import timedelta 
+
+SIMPLE_JWT = { 
+'USER_ID_FIELD': 'user_id', 
+'USER_ID_CLAIM': 'user_id', 
+'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5), 
+'ALGORITHM': 'HS256', 
+# clé secrète (utilise la même que Django SECRET_KEY ou une autre forte) 
+'SIGNING_KEY': SECRET_KEY, 
+'AUTH_HEADER_TYPES': ('Bearer',), 
+'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',), } 

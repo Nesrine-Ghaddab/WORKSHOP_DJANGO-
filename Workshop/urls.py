@@ -16,8 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from . import views
+
+handler404 = 'Workshop.views.error_404'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('conferences/', include('ConferenceApp.urls')),
+    path('', views.index, name='index'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
+    path('feature/', views.feature, name='feature'),
+    path('project/', views.project, name='project'),
+    path('service/', views.service, name='service'),
+    path('team/', views.team, name='team'),
+    path('testimonial/', views.testimonial, name='testimonial'),
+    path('user/',include("UserApp.urls")),
+    path('api/', include("SessionAppApi.urls")),
+    path('security/', include("securityConfigApp.urls")),
+
+
 ]
