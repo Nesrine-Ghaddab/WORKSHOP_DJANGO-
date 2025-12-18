@@ -1,0 +1,13 @@
+<h1>Demander un résumé à l'Agent</h1>
+<form method="post">
+    {% csrf_token %}
+    <label>Votre texte long :</label><br />
+    <textarea name="text_input">{{ original_text }}</textarea><br />
+    <button type="submit">Envoyer la tâche (A2A)</button>
+</form>
+{% if summary %}
+    <div class="result">
+        <h3>Réponse de l'agent :</h3>
+        <p>{{ summary }}</p>
+    </div>
+{% endif %}
