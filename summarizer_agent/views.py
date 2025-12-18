@@ -9,7 +9,14 @@ from django.shortcuts import render
 import google.generativeai as genai
 from dotenv import load_dotenv
 import os
-    
+# 1. Chargement de la configuration
+load_dotenv()
+# Vérification de la clé API pour éviter les crashs silencieux
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    print("⚠️ ATTENTION : La clé GEMINI_API_KEY est manquante dans le fichier .env")
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel('gemini-2.5-flash')
 @require_http_methods(["GET"])
 def get_agent_card(request):
  """
@@ -92,11 +99,3 @@ def interface_client(request) :
         'summary': summary,
         'original_text': original_text
  })
-# 1. Chargement de la configuration
-load_dotenv()
-# Vérification de la clé API pour éviter les crashs silencieux
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    print("⚠️ ATTENTION : La clé GEMINI_API_KEY est manquante dans le fichier .env")
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('gemini-2.5-flash')
